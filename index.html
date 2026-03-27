@@ -119,6 +119,19 @@
   .file-warning { background: #fff8e1; border: 1px solid #f0c040; padding: 10px 14px; margin-bottom: 16px; font-size: 11px; color: #7a5800; line-height: 1.5; }
   .file-warning strong { display: block; margin-bottom: 3px; font-size: 12px; }
   .file-warning code { background: #f5e9b8; padding: 1px 5px; font-family: var(--mono); font-size: 10px; }
+
+  /* Directory */
+  .dir-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--rule); gap: 12px; }
+  .dir-item:last-child { border-bottom: none; }
+  .dir-name { font-family: var(--serif); font-size: 17px; font-style: italic; cursor: pointer; }
+  .dir-name:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .dir-owner { font-size: 10px; color: var(--ink3); font-family: var(--mono); margin-top: 2px; }
+  .dir-badge { font-size: 10px; padding: 3px 8px; border: 1px solid var(--rule); color: var(--ink3); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+  .dir-badge.has-profile { border-color: var(--green); color: var(--green); }
+  .nav-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 1px solid var(--rule); }
+  .nav-tab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 16px; cursor: pointer; color: var(--ink3); border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; border-top: none; border-left: none; border-right: none; }
+  .nav-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+  .nav-tab:hover { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -369,6 +382,92 @@ function ProfilePage({ name, address, providerRef, wcRef, onBack }) {
   );
 }
 
+/* ── DirectoryPage ── */
+function DirectoryPage({ onProfile }) {
+  const [names,   setNames]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [profiles, setProfiles] = useState({});
+
+  useEffect(() => {
+    loadNames();
+  }, []);
+
+  const loadNames = async () => {
+    setLoading(true);
+    try {
+      /* Read all NameMinted events from block 0 to latest */
+      const logs = await publicClient.getLogs({
+        address: REGISTRY_ADDRESS,
+        event: {
+          type: 'event',
+          name: 'NameMinted',
+          inputs: [
+            { type: 'string', name: 'name', indexed: true },
+            { type: 'address', name: 'owner', indexed: true },
+          ],
+        },
+        fromBlock: 0n,
+        toBlock: 'latest',
+      });
+
+      /* Deduplicate by name (keep last mint if somehow duped) */
+      const seen = new Map();
+      for (const log of logs) {
+        const name  = log.args.name;
+        const owner = log.args.owner;
+        if (name) seen.set(name, { name, owner });
+      }
+      const list = [...seen.values()].reverse(); // newest first
+      setNames(list);
+
+      /* Check which names have profiles */
+      const profileMap = {};
+      await Promise.all(list.map(async ({ name }) => {
+        try {
+          const p = await publicClient.readContract({
+            address: PROFILE_ADDRESS, abi: PROFILE_ABI,
+            functionName: 'getProfile', args: [name],
+          });
+          profileMap[name] = !!(p.bio || p.twitter || p.telegram || p.website || p.avatarURI);
+        } catch { profileMap[name] = false; }
+      }));
+      setProfiles(profileMap);
+    } catch (e) {
+      console.error('Directory load error:', e);
+    }
+    setLoading(false);
+  };
+
+  if (loading) return h('div', { style: { paddingTop: 40, textAlign: 'center', color: 'var(--ink3)' } },
+    h('span', { className: 'spinner' }), ' Loading names…'
+  );
+
+  return h('div', { className: 'slide' },
+    h('p', { className: 'label' }, `${names.length} name${names.length !== 1 ? 's' : ''} registered`),
+
+    names.length === 0
+      ? h('div', { style: { textAlign: 'center', color: 'var(--ink3)', padding: '40px 0', fontSize: 13 } },
+          'No names minted yet. Be the first!'
+        )
+      : h('div', null,
+          names.map(({ name, owner }) =>
+            h('div', { key: name, className: 'dir-item' },
+              h('div', null,
+                h('div', { className: 'dir-name', onClick: () => onProfile(name) }, `${name}.star`),
+                h('div', { className: 'dir-owner' }, `${owner.slice(0,8)}…${owner.slice(-4)}`),
+              ),
+              h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+                h('span', { className: `dir-badge ${profiles[name] ? 'has-profile' : ''}` },
+                  profiles[name] ? 'Profile' : 'No profile'
+                ),
+                h('span', { style: { cursor: 'pointer', fontSize: 12, color: 'var(--ink3)' }, onClick: () => onProfile(name) }, '→'),
+              ),
+            )
+          )
+        ),
+  );
+}
+
 /* ── App ── */
 function App() {
   /* wallet */
@@ -381,8 +480,9 @@ function App() {
   const providerRef = useRef(null);
   const wcRef       = useRef(null);
 
-  /* page routing: 'home' | 'profile:name' */
+  /* page routing: 'home' | 'directory' | 'profile:name' */
   const [page, setPage] = useState('home');
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'directory'
 
   /* home state */
   const [nameInput,  setNameInput]  = useState('');
@@ -550,6 +650,17 @@ function App() {
               : h('button', { className: 'wallet-btn connect', onClick: openModal }, 'Connect wallet')
     ),
 
+    /* Nav tabs */
+    h('div', { className: 'nav-tabs' },
+      h('button', { className: `nav-tab ${activeTab === 'home' ? 'active' : ''}`, onClick: () => setActiveTab('home') }, 'Mint'),
+      h('button', { className: `nav-tab ${activeTab === 'directory' ? 'active' : ''}`, onClick: () => setActiveTab('directory') }, 'Directory'),
+    ),
+
+    /* Directory tab */
+    activeTab === 'directory' && h(DirectoryPage, { onProfile: name => setPage(`profile:${name}`) }),
+
+    /* Mint tab */
+    activeTab === 'home' && h('div', null,
     h('p', { className: 'label' }, 'Claim a name'),
     h('div', { className: 'input-row' },
       h('input', { value: nameInput, onChange: e => handleNameInput(e.target.value), onKeyDown: e => e.key === 'Enter' && checkAvailability(), placeholder: 'yourname', maxLength: 32, spellCheck: false }),
@@ -617,6 +728,7 @@ function App() {
       'Registry · ',
       h('a', { href: `${EXPLORER}/address/${REGISTRY_ADDRESS}`, target: '_blank', rel: 'noreferrer', style: { color: 'var(--ink3)', textDecoration: 'underline', textUnderlineOffset: '3px' } }, `${REGISTRY_ADDRESS.slice(0,10)}…`),
     ),
+    ), // end mint tab
   );
 }
 
