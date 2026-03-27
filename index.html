@@ -395,7 +395,7 @@ function DirectoryPage({ onProfile }) {
   const loadNames = async () => {
     setLoading(true);
     try {
-      /* Read all NameMinted events from block 0 to latest */
+      /* Read NameMinted events — start from contract deploy block */
       const logs = await publicClient.getLogs({
         address: REGISTRY_ADDRESS,
         event: {
@@ -406,7 +406,7 @@ function DirectoryPage({ onProfile }) {
             { type: 'address', name: 'owner', indexed: true },
           ],
         },
-        fromBlock: 0n,
+        fromBlock: 25700000n,
         toBlock: 'latest',
       });
 
