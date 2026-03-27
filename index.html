@@ -395,7 +395,9 @@ function DirectoryPage({ onProfile }) {
   const loadNames = async () => {
     setLoading(true);
     try {
-      /* Read NameMinted events — start from contract deploy block */
+      /* Get all transactions that called mint() on StarRegistry.
+         We fetch logs for NameMinted but read the tx input to get the actual name,
+         because indexed strings in events are stored as keccak256 hashes, not the value. */
       const logs = await publicClient.getLogs({
         address: REGISTRY_ADDRESS,
         event: {
@@ -410,14 +412,27 @@ function DirectoryPage({ onProfile }) {
         toBlock: 'latest',
       });
 
-      /* Deduplicate by name (keep last mint if somehow duped) */
+      /* For each log, fetch the transaction to decode the name from calldata */
       const seen = new Map();
-      for (const log of logs) {
-        const name  = log.args.name;
-        const owner = log.args.owner;
-        if (name) seen.set(name, { name, owner });
-      }
-      const list = [...seen.values()].reverse(); // newest first
+      await Promise.all(logs.map(async (log) => {
+        try {
+          const owner = log.args.owner;
+          const tx = await publicClient.getTransaction({ hash: log.transactionHash });
+          /* mint(string) selector = 0x4e589523
+             calldata: 4 bytes selector + 32 bytes offset + 32 bytes length + name bytes */
+          const data = tx.input;
+          if (!data || data.length < 10) return;
+          /* decode name from calldata manually */
+          const hex = data.slice(2); // remove 0x
+          const offset = parseInt(hex.slice(8, 72), 16) * 2; // offset in bytes * 2 for hex chars
+          const nameLen = parseInt(hex.slice(8 + offset, 8 + offset + 64), 16);
+          const nameHex = hex.slice(8 + offset + 64, 8 + offset + 64 + nameLen * 2);
+          const name = decodeURIComponent(nameHex.replace(/../g, '%$&').replace(/%00/g, ''));
+          if (name && name.length >= 3) seen.set(name, { name, owner });
+        } catch {}
+      }));
+
+      const list = [...seen.values()].reverse();
       setNames(list);
 
       /* Check which names have profiles */
