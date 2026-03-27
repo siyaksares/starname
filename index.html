@@ -8,288 +8,157 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --ink:    #0e0e0e;
-    --ink2:   #5a5a5a;
-    --ink3:   #a0a0a0;
-    --paper:  #f5f3ef;
-    --rule:   #d8d4cc;
-    --accent: #0e0e0e;
-    --green:  #1a6b3c;
-    --red:    #8b1a1a;
-    --mono:   'DM Mono', monospace;
-    --serif:  'Instrument Serif', serif;
+    --ink: #0e0e0e; --ink2: #5a5a5a; --ink3: #a0a0a0;
+    --paper: #f5f3ef; --rule: #d8d4cc; --green: #1a6b3c; --red: #8b1a1a;
+    --mono: 'DM Mono', monospace; --serif: 'Instrument Serif', serif;
   }
-
   html, body { height: 100%; background: var(--paper); color: var(--ink); }
-
-  body {
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    padding: 48px 16px 80px;
-    min-height: 100vh;
-  }
-
+  body { font-family: var(--mono); font-size: 13px; line-height: 1.6; display: flex; justify-content: center; padding: 48px 16px 80px; min-height: 100vh; }
   #root { width: 100%; max-width: 480px; }
 
-  /* ── Typography ── */
-  .wordmark {
-    font-family: var(--serif);
-    font-size: 42px;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    margin-bottom: 4px;
-  }
+  .wordmark { font-family: var(--serif); font-size: 42px; line-height: 1; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 4px; cursor: pointer; }
   .wordmark em { font-style: italic; }
-  .tagline {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink3);
-    margin-bottom: 48px;
-  }
+  .tagline { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink3); margin-bottom: 48px; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 28px 0; }
+  .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); margin-bottom: 10px; }
 
-  /* ── Divider ── */
-  hr {
-    border: none;
-    border-top: 1px solid var(--rule);
-    margin: 28px 0;
-  }
-
-  /* ── Section label ── */
-  .label {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink3);
-    margin-bottom: 10px;
-  }
-
-  /* ── Input row ── */
-  .input-row {
-    display: flex;
-    align-items: stretch;
-    border: 1px solid var(--ink);
-    background: #fff;
-  }
-  .input-row input {
-    flex: 1;
-    padding: 12px 14px;
-    font-family: var(--mono);
-    font-size: 15px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--ink);
-    min-width: 0;
-  }
+  .input-row { display: flex; align-items: stretch; border: 1px solid var(--ink); background: #fff; }
+  .input-row input { flex: 1; padding: 12px 14px; font-family: var(--mono); font-size: 15px; border: none; outline: none; background: transparent; color: var(--ink); min-width: 0; }
   .input-row input::placeholder { color: var(--ink3); }
-  .suffix {
-    padding: 12px 12px 12px 0;
-    font-size: 15px;
-    color: var(--ink3);
-    user-select: none;
-    align-self: center;
-  }
-  .input-row button {
-    padding: 0 18px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
+  .suffix { padding: 12px 12px 12px 0; font-size: 15px; color: var(--ink3); user-select: none; align-self: center; }
+  .input-row button { padding: 0 18px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; cursor: pointer; transition: opacity 0.15s; }
   .input-row button:disabled { opacity: 0.35; cursor: default; }
   .input-row button:not(:disabled):hover { opacity: 0.75; }
 
-  /* ── Status pill ── */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 12px;
-    padding: 6px 12px;
-    margin-top: 10px;
-    border: 1px solid var(--rule);
-  }
-  .pill.ok   { border-color: var(--green); color: var(--green); }
-  .pill.err  { border-color: var(--red);   color: var(--red);   }
-  .pill.info { border-color: var(--ink2);  color: var(--ink2);  }
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; padding: 6px 12px; margin-top: 10px; border: 1px solid var(--rule); }
+  .pill.ok  { border-color: var(--green); color: var(--green); }
+  .pill.err { border-color: var(--red);   color: var(--red);   }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
-  /* ── Primary button ── */
-  .btn {
-    width: 100%;
-    padding: 14px;
-    margin-top: 14px;
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
+  .btn { width: 100%; padding: 14px; margin-top: 14px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; cursor: pointer; transition: opacity 0.15s; }
   .btn:disabled { opacity: 0.35; cursor: default; }
   .btn:not(:disabled):hover { opacity: 0.78; }
-  .btn.ghost {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--ink);
-  }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
   .btn.ghost:not(:disabled):hover { background: var(--ink); color: var(--paper); }
+  .btn.green { background: var(--green); }
 
-  /* ── Data rows ── */
-  .data-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--rule);
-    gap: 12px;
-  }
+  .data-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--rule); gap: 12px; }
   .data-row:last-child { border-bottom: none; }
-  .data-key   { color: var(--ink3); font-size: 11px; letter-spacing: 0.06em; flex-shrink: 0; }
-  .data-value { color: var(--ink);  font-size: 13px; word-break: break-all; text-align: right; }
+  .data-key  { color: var(--ink3); font-size: 11px; letter-spacing: 0.06em; flex-shrink: 0; }
+  .data-value { color: var(--ink); font-size: 13px; word-break: break-all; text-align: right; }
   .data-value.name { font-family: var(--serif); font-size: 18px; font-style: italic; }
   .data-value.mono { font-size: 11px; }
 
-  /* ── Tx link ── */
-  a.tx-link {
-    color: var(--ink3);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
+  a.tx-link { color: var(--ink3); font-size: 10px; letter-spacing: 0.08em; text-decoration: underline; text-underline-offset: 3px; }
   a.tx-link:hover { color: var(--ink); }
 
-  /* ── Spinner ── */
   @keyframes spin { to { transform: rotate(360deg); } }
-  .spinner {
-    display: inline-block;
-    width: 11px; height: 11px;
-    border: 1.5px solid var(--ink3);
-    border-top-color: var(--ink);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
+  .spinner { display: inline-block; width: 11px; height: 11px; border: 1.5px solid var(--ink3); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
 
-  /* ── Slide-in ── */
-  @keyframes slidein {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes slidein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   .slide { animation: slidein 0.25s ease both; }
 
-  /* ── Resolve lookup ── */
-  .resolve-input-row {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--ink);
-  }
-  .resolve-input-row input {
-    flex: 1;
-    padding: 10px 12px;
-    font-family: var(--mono);
-    font-size: 13px;
-    border: none;
-    outline: none;
-    background: #fff;
-    color: var(--ink);
-    min-width: 0;
-  }
+  .resolve-input-row { display: flex; border: 1px solid var(--ink); }
+  .resolve-input-row input { flex: 1; padding: 10px 12px; font-family: var(--mono); font-size: 13px; border: none; outline: none; background: #fff; color: var(--ink); min-width: 0; }
   .resolve-input-row input::placeholder { color: var(--ink3); }
-  .resolve-input-row button {
-    padding: 0 16px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    white-space: nowrap;
-  }
+  .resolve-input-row button { padding: 0 16px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
   .resolve-input-row button:disabled { opacity: 0.35; cursor: default; }
   .resolve-input-row button:not(:disabled):hover { opacity: 0.75; }
 
-  /* ── Wallet bar ── */
-  .wallet-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border: 1px solid var(--rule);
-    background: #fff;
-    margin-bottom: 28px;
-  }
+  .wallet-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid var(--rule); background: #fff; margin-bottom: 28px; }
   .wallet-status { display: flex; align-items: center; gap: 8px; }
-  .wallet-dot    { width: 7px; height: 7px; border-radius: 50%; }
+  .wallet-dot { width: 7px; height: 7px; border-radius: 50%; }
   .wallet-dot.on  { background: var(--green); }
   .wallet-dot.off { background: var(--ink3); }
-  .wallet-addr   { font-size: 12px; color: var(--ink2); }
-  .wallet-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: none;
-    border: 1px solid var(--rule);
-    padding: 5px 10px;
-    cursor: pointer;
-    color: var(--ink2);
-    transition: all 0.15s;
-  }
+  .wallet-addr { font-size: 12px; color: var(--ink2); }
+  .wallet-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: none; border: 1px solid var(--rule); padding: 5px 10px; cursor: pointer; color: var(--ink2); transition: all 0.15s; }
   .wallet-btn:hover { border-color: var(--ink); color: var(--ink); }
-  .wallet-btn.connect {
-    background: var(--ink); color: var(--paper); border-color: var(--ink);
-  }
+  .wallet-btn.connect { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .wallet-btn.connect:hover { opacity: 0.8; }
 
-  /* ── Success banner ── */
-  .success-banner {
-    border: 1px solid var(--green);
-    padding: 18px;
-    margin-top: 14px;
-  }
-  .success-name {
-    font-family: var(--serif);
-    font-size: 28px;
-    font-style: italic;
-    color: var(--green);
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
+  .success-banner { border: 1px solid var(--green); padding: 18px; margin-top: 14px; }
+  .success-name { font-family: var(--serif); font-size: 28px; font-style: italic; color: var(--green); line-height: 1.1; margin-bottom: 8px; }
   .success-sub { font-size: 11px; color: var(--green); opacity: 0.8; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(14,14,14,0.5); display: flex; align-items: center; justify-content: center; z-index: 999; animation: fadein 0.15s ease both; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  .modal { background: var(--paper); border: 1px solid var(--ink); width: 100%; max-width: 340px; margin: 16px; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--rule); }
+  .modal-title { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); }
+  .modal-close { background: none; border: none; font-size: 20px; line-height: 1; color: var(--ink3); cursor: pointer; padding: 0 4px; }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .wallet-option { display: flex; align-items: center; gap: 14px; width: 100%; padding: 13px 14px; border: 1px solid var(--rule); background: #fff; cursor: pointer; text-align: left; font-family: var(--mono); transition: border-color 0.12s; }
+  .wallet-option:hover:not(:disabled) { border-color: var(--ink); }
+  .wallet-option:disabled { opacity: 0.38; cursor: default; }
+  .wo-icon { width: 32px; height: 32px; border-radius: 7px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; background: var(--paper); border: 1px solid var(--rule); }
+  .wo-name { font-size: 13px; color: var(--ink); }
+  .wo-sub  { font-size: 10px; color: var(--ink3); margin-top: 1px; }
+  .modal-sep { height: 1px; background: var(--rule); margin: 4px 0; }
+  .modal-error { padding: 8px 14px 14px; font-size: 11px; color: var(--red); text-align: center; }
+
+  /* Profile page */
+  .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid var(--rule); }
+  .profile-avatar-placeholder { width: 80px; height: 80px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 32px; font-style: italic; color: #534AB7; border: 1px solid var(--rule); }
+  .profile-header { text-align: center; margin-bottom: 24px; }
+  .profile-name { font-family: var(--serif); font-size: 32px; font-style: italic; margin: 12px 0 4px; }
+  .profile-owner { font-size: 11px; color: var(--ink3); font-family: var(--mono); }
+  .profile-bio { text-align: center; color: var(--ink2); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+  .link-btn { display: block; width: 100%; padding: 13px 16px; border: 1px solid var(--rule); background: #fff; text-align: center; text-decoration: none; color: var(--ink); font-family: var(--mono); font-size: 13px; margin-bottom: 10px; transition: border-color 0.12s; cursor: pointer; }
+  .link-btn:hover { border-color: var(--ink); }
+  .back-link { font-size: 11px; color: var(--ink3); cursor: pointer; margin-bottom: 28px; display: inline-block; }
+  .back-link:hover { color: var(--ink); }
+
+  /* Edit form */
+  .edit-input { width: 100%; padding: 10px 12px; font-family: var(--mono); font-size: 13px; border: 1px solid var(--rule); background: #fff; color: var(--ink); outline: none; margin-bottom: 10px; }
+  .edit-input:focus { border-color: var(--ink); }
+  .edit-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; display: block; }
+
+  .file-warning { background: #fff8e1; border: 1px solid #f0c040; padding: 10px 14px; margin-bottom: 16px; font-size: 11px; color: #7a5800; line-height: 1.5; }
+  .file-warning strong { display: block; margin-bottom: 3px; font-size: 12px; }
+  .file-warning code { background: #f5e9b8; padding: 1px 5px; font-family: var(--mono); font-size: 10px; }
 </style>
 </head>
 <body>
 <div id="root"></div>
 
+<script>
+(function () {
+  function labelProvider(p) {
+    if (!p || typeof p.request !== 'function') return null;
+    if (p.isRabby)                                 return { name: 'Rabby',           icon: '🐇' };
+    if (p.isCoinbaseWallet || p.isCoinbaseBrowser) return { name: 'Coinbase Wallet', icon: '🔵' };
+    if (p.isPhantom && p.isEVM !== false)          return { name: 'Phantom',         icon: '👻' };
+    if (p.isBraveWallet)                           return { name: 'Brave Wallet',    icon: '🦁' };
+    if (p.isMetaMask)                              return { name: 'MetaMask',        icon: '🦊' };
+    return { name: 'Browser wallet', icon: '🔑' };
+  }
+  window.__scanWallets = function () {
+    var seen = new Set(); var list = [];
+    function add(p) {
+      if (!p || seen.has(p)) return;
+      var meta = labelProvider(p); if (!meta) return;
+      seen.add(p); list.push({ name: meta.name, icon: meta.icon, provider: p });
+    }
+    var arr = window.ethereum && window.ethereum.providers;
+    if (Array.isArray(arr)) arr.forEach(add);
+    if (window.ethereum) add(window.ethereum);
+    return list;
+  };
+  window.__isFileProtocol = (location.protocol === 'file:');
+})();
+</script>
+
 <script type="module">
-import { createElement as h, useState, useEffect, useCallback } from 'https://esm.sh/react@18';
+import { createElement as h, useState, useEffect, useRef, useCallback } from 'https://esm.sh/react@18';
 import { createRoot } from 'https://esm.sh/react-dom@18/client';
 import { createPublicClient, createWalletClient, custom, http, parseAbi } from 'https://esm.sh/viem@2';
 
-/* ─── Contract config ─── */
+/* ── Contracts ── */
 const REGISTRY_ADDRESS = '0x2B6FdA740ed1C7d0AF077EDC573931B943E0e1AD';
+const PROFILE_ADDRESS  = '0x79AD308abFbaebfBA55838374c1daa0BEb8db848';
 
 const REGISTRY_ABI = parseAbi([
   'function isAvailable(string calldata name) external view returns (bool)',
@@ -298,364 +167,444 @@ const REGISTRY_ABI = parseAbi([
   'function reverseLookup(address owner) external view returns (string memory)',
 ]);
 
+const PROFILE_ABI = parseAbi([
+  'function setProfile(string calldata name, string calldata bio, string calldata avatarURI, string calldata twitter, string calldata telegram, string calldata website) external',
+  'function getProfile(string calldata name) external view returns ((string bio, string avatarURI, string twitter, string telegram, string website, address owner))',
+]);
+
 const SONEIUM_MINATO = {
-  id: 1946,
-  name: 'Soneium Minato Testnet',
+  id: 1946, name: 'Soneium Minato Testnet',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: { default: { http: ['https://rpc.minato.soneium.org'] } },
 };
-
-const publicClient = createPublicClient({
-  chain: SONEIUM_MINATO,
-  transport: http(),
-});
-
-const NULL_ADDR = '0x0000000000000000000000000000000000000000';
+const CHAIN_HEX = '0x79A';
 const EXPLORER  = 'https://soneium-minato.blockscout.com';
+const NULL_ADDR = '0x0000000000000000000000000000000000000000';
+const WC_PROJECT_ID = '';
 
-/* ─── Wallet helpers ─── */
-async function getProvider() {
-  if (typeof window.ethereum === 'undefined') {
-    throw new Error('No wallet detected. Install MetaMask.');
-  }
-  return window.ethereum;
-}
+const publicClient = createPublicClient({ chain: SONEIUM_MINATO, transport: http() });
 
 async function switchToMinato(provider) {
   try {
-    await provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x79A' }], // 1946 hex
-    });
+    await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_HEX }] });
   } catch (err) {
-    if (err.code === 4902) {
-      await provider.request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId: '0x79A',
-          chainName: 'Soneium Minato Testnet',
-          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-          rpcUrls: ['https://rpc.minato.soneium.org'],
-          blockExplorerUrls: [EXPLORER],
-        }],
-      });
+    if (err.code === 4902 || err.code === -32603) {
+      await provider.request({ method: 'wallet_addEthereumChain', params: [{
+        chainId: CHAIN_HEX, chainName: 'Soneium Minato Testnet',
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        rpcUrls: ['https://rpc.minato.soneium.org'],
+        blockExplorerUrls: [EXPLORER],
+      }]});
     } else throw err;
   }
 }
 
-/* ─── App ─── */
+const short = a => a ? `${a.slice(0,6)}…${a.slice(-4)}` : '';
+
+/* ── WalletModal ── */
+function WalletModal({ wallets, onSelect, onClose, modalError, connecting }) {
+  const wcEnabled = WC_PROJECT_ID.length > 0;
+  return h('div', { className: 'modal-overlay', onClick: e => e.target === e.currentTarget && onClose() },
+    h('div', { className: 'modal slide' },
+      h('div', { className: 'modal-header' },
+        h('span', { className: 'modal-title' }, 'Connect wallet'),
+        h('button', { className: 'modal-close', onClick: onClose }, '×'),
+      ),
+      h('div', { className: 'modal-body' },
+        wallets.length > 0
+          ? wallets.map((w, i) =>
+              h('button', { key: i, className: 'wallet-option', disabled: connecting, onClick: () => onSelect(w) },
+                h('div', { className: 'wo-icon' }, w.icon),
+                h('div', null, h('div', { className: 'wo-name' }, w.name), h('div', { className: 'wo-sub' }, 'Browser extension')),
+              )
+            )
+          : h('div', { className: 'wallet-option', style: { cursor: 'default', opacity: 0.5 } },
+              h('div', { className: 'wo-icon' }, '🔌'),
+              h('div', null,
+                h('div', { className: 'wo-name' }, 'No wallet detected'),
+                h('div', { className: 'wo-sub' }, window.__isFileProtocol ? 'Serve over HTTP — npx serve .' : 'Reload the page and try again'),
+              ),
+            ),
+        wcEnabled && h('div', { style: { display: 'contents' } },
+          h('div', { className: 'modal-sep' }),
+          h('button', { className: 'wallet-option', disabled: connecting, onClick: () => onSelect(null, 'walletconnect') },
+            h('div', { className: 'wo-icon', style: { background: '#e8f2ff', borderColor: '#c0d8f8' } },
+              h('svg', { width: 18, height: 18, viewBox: '0 0 32 32', fill: 'none' },
+                h('path', { fill: '#3b99fc', d: 'M9.6 12.8c3.5-3.5 9.2-3.5 12.8 0l.43.42c.17.18.17.46 0 .64l-1.47 1.43c-.09.09-.23.09-.32 0l-.59-.58c-2.44-2.4-6.4-2.4-8.84 0l-.63.62c-.09.09-.23.09-.32 0L9.17 13.9c-.18-.18-.18-.46 0-.64l.43-.46zm15.8 2.95 1.31 1.28c.18.17.18.46 0 .63l-5.9 5.77c-.18.17-.46.17-.64 0l-4.18-4.1c-.05-.04-.12-.04-.16 0l-4.18 4.1c-.18.17-.47.17-.65 0L5.1 17.66c-.18-.17-.18-.46 0-.63l1.31-1.28c.18-.17.47-.17.65 0l4.18 4.1c.04.05.11.05.16 0l4.18-4.1c.18-.17.46-.17.64 0l4.18 4.1c.05.05.12.05.16 0l4.18-4.1c.18-.17.47-.17.65 0z' })
+              )
+            ),
+            h('div', null, h('div', { className: 'wo-name' }, 'WalletConnect'), h('div', { className: 'wo-sub' }, 'Scan QR · any mobile wallet')),
+          ),
+        ),
+      ),
+      modalError && h('div', { className: 'modal-error' }, modalError),
+    )
+  );
+}
+
+/* ── ProfilePage ── */
+function ProfilePage({ name, address, providerRef, wcRef, onBack }) {
+  const [profile,  setProfile]  = useState(null);
+  const [loading,  setLoading]  = useState(true);
+  const [editing,  setEditing]  = useState(false);
+  const [saving,   setSaving]   = useState(false);
+  const [saveErr,  setSaveErr]  = useState(null);
+  const [form, setForm] = useState({ bio: '', avatarURI: '', twitter: '', telegram: '', website: '' });
+
+  const isOwner = address && profile?.owner && address.toLowerCase() === profile.owner.toLowerCase();
+
+  useEffect(() => {
+    loadProfile();
+  }, [name]);
+
+  const loadProfile = async () => {
+    setLoading(true);
+    try {
+      const p = await publicClient.readContract({
+        address: PROFILE_ADDRESS, abi: PROFILE_ABI,
+        functionName: 'getProfile', args: [name],
+      });
+      setProfile(p);
+      setForm({ bio: p.bio, avatarURI: p.avatarURI, twitter: p.twitter, telegram: p.telegram, website: p.website });
+    } catch { setProfile(null); }
+    setLoading(false);
+  };
+
+  const handleSave = async () => {
+    if (!providerRef.current) return;
+    setSaving(true); setSaveErr(null);
+    try {
+      if (providerRef.current !== wcRef.current) await switchToMinato(providerRef.current);
+      const wc = createWalletClient({ chain: SONEIUM_MINATO, transport: custom(providerRef.current) });
+      const hash = await wc.writeContract({
+        address: PROFILE_ADDRESS, abi: PROFILE_ABI,
+        functionName: 'setProfile',
+        args: [name, form.bio, form.avatarURI, form.twitter, form.telegram, form.website],
+        account: address,
+      });
+      await publicClient.waitForTransactionReceipt({ hash });
+      await loadProfile();
+      setEditing(false);
+    } catch (e) {
+      const msg = e?.shortMessage || e?.message || 'Transaction failed';
+      setSaveErr(msg.length > 100 ? msg.slice(0, 100) + '…' : msg);
+    }
+    setSaving(false);
+  };
+
+  const field = (key, placeholder, label) =>
+    h('div', { key },
+      h('label', { className: 'edit-label' }, label),
+      h('input', {
+        className: 'edit-input',
+        value: form[key],
+        placeholder,
+        onChange: e => setForm({ ...form, [key]: e.target.value }),
+      })
+    );
+
+  if (loading) return h('div', { style: { paddingTop: 40, textAlign: 'center', color: 'var(--ink3)' } }, 'Loading…');
+
+  return h('div', { className: 'slide' },
+    h('span', { className: 'back-link', onClick: onBack }, '← Back'),
+
+    h('div', { className: 'profile-header' },
+      profile?.avatarURI
+        ? h('img', { className: 'profile-avatar', src: profile.avatarURI, alt: name })
+        : h('div', { className: 'profile-avatar-placeholder' }, name[0].toUpperCase()),
+      h('div', { className: 'profile-name' }, `${name}.star`),
+      h('div', { className: 'profile-owner' }, profile?.owner && profile.owner !== NULL_ADDR ? short(profile.owner) : 'No profile set'),
+    ),
+
+    profile?.bio && h('p', { className: 'profile-bio' }, profile.bio),
+
+    /* links */
+    h('div', { style: { marginBottom: 24 } },
+      profile?.twitter && h('a', { className: 'link-btn', href: `https://x.com/${profile.twitter}`, target: '_blank', rel: 'noreferrer' }, `𝕏  @${profile.twitter}`),
+      profile?.telegram && h('a', { className: 'link-btn', href: `https://t.me/${profile.telegram}`, target: '_blank', rel: 'noreferrer' }, `✈  t.me/${profile.telegram}`),
+      profile?.website && h('a', { className: 'link-btn', href: profile.website, target: '_blank', rel: 'noreferrer' }, `🔗  ${profile.website.replace(/^https?:\/\//, '')}`),
+    ),
+
+    /* edit section — only owner */
+    isOwner && !editing && h('button', { className: 'btn ghost', onClick: () => setEditing(true) }, 'Edit profile'),
+
+    editing && h('div', null,
+      h('hr'),
+      h('p', { className: 'label' }, 'Edit profile'),
+      field('bio',       'Short bio', 'Bio'),
+      field('avatarURI', 'https://… or IPFS hash', 'Avatar URL'),
+      field('twitter',   'handle (no @)', 'X / Twitter'),
+      field('telegram',  'handle (no @)', 'Telegram'),
+      field('website',   'https://…', 'Website'),
+      saveErr && h('div', { className: 'pill err slide', style: { marginBottom: 10 } }, h('span', { className: 'dot' }), saveErr),
+      h('button', { className: 'btn green', onClick: handleSave, disabled: saving },
+        saving ? h('span', null, h('span', { className: 'spinner' }), 'Saving…') : 'Save to chain'
+      ),
+      h('button', { className: 'btn ghost', style: { marginTop: 8 }, onClick: () => setEditing(false) }, 'Cancel'),
+    ),
+
+    !isOwner && address && h('p', { style: { fontSize: 11, color: 'var(--ink3)', textAlign: 'center', marginTop: 16 } },
+      'Only the name owner can edit this profile.'
+    ),
+    !address && h('p', { style: { fontSize: 11, color: 'var(--ink3)', textAlign: 'center', marginTop: 16 } },
+      'Connect your wallet to edit your profile.'
+    ),
+
+    h('hr'),
+    h('div', { className: 'data-row' },
+      h('span', { className: 'data-key' }, 'Explorer'),
+      h('a', { className: 'tx-link', href: `${EXPLORER}/address/${PROFILE_ADDRESS}`, target: '_blank', rel: 'noreferrer' }, 'View contract ↗'),
+    ),
+  );
+}
+
+/* ── App ── */
 function App() {
-  /* wallet state */
-  const [address, setAddress]   = useState(null);
-  const [connecting, setConn]   = useState(false);
+  /* wallet */
+  const [address,    setAddress]    = useState(null);
+  const [walletName, setWalletName] = useState('');
+  const [wallets,    setWallets]    = useState([]);
+  const [showModal,  setShowModal]  = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [modalError, setModalError] = useState(null);
+  const providerRef = useRef(null);
+  const wcRef       = useRef(null);
 
-  /* search & mint state */
-  const [nameInput, setNameInput] = useState('');
-  const [available, setAvailable] = useState(null); // null | true | false
-  const [checking, setChecking]   = useState(false);
-  const [minting, setMinting]     = useState(false);
+  /* page routing: 'home' | 'profile:name' */
+  const [page, setPage] = useState('home');
+
+  /* home state */
+  const [nameInput,  setNameInput]  = useState('');
+  const [available,  setAvailable]  = useState(null);
+  const [checking,   setChecking]   = useState(false);
+  const [minting,    setMinting]    = useState(false);
   const [mintedName, setMintedName] = useState(null);
-  const [mintTx, setMintTx]       = useState(null);
-  const [mintError, setMintError] = useState(null);
-
-  /* owned name */
-  const [ownedName, setOwnedName] = useState(null);
-
-  /* resolve */
+  const [mintTx,     setMintTx]     = useState(null);
+  const [mintError,  setMintError]  = useState(null);
+  const [ownedName,  setOwnedName]  = useState(null);
   const [resolveInput, setResolveInput] = useState('');
-  const [resolved, setResolved]         = useState(null); // { name, address } | null
-  const [resolving, setResolving]       = useState(false);
+  const [resolved,     setResolved]     = useState(null);
+  const [resolving,    setResolving]    = useState(false);
   const [resolveError, setResolveError] = useState(null);
 
-  /* ── on mount: check if already connected ── */
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
-        if (accounts[0]) handleConnected(accounts[0]);
-      });
-      window.ethereum.on('accountsChanged', accs => {
-        if (accs[0]) handleConnected(accs[0]);
-        else { setAddress(null); setOwnedName(null); }
-      });
-    }
-  }, []);
-
-  const handleConnected = async (addr) => {
-    setAddress(addr);
+  const loadOwnedName = useCallback(async (addr) => {
     try {
-      const name = await publicClient.readContract({
-        address: REGISTRY_ADDRESS,
-        abi: REGISTRY_ABI,
-        functionName: 'reverseLookup',
-        args: [addr],
-      });
+      const name = await publicClient.readContract({ address: REGISTRY_ADDRESS, abi: REGISTRY_ABI, functionName: 'reverseLookup', args: [addr] });
       setOwnedName(name || null);
     } catch { setOwnedName(null); }
-  };
+  }, []);
 
-  /* ── connect wallet ── */
-  const connectWallet = async () => {
-    setConn(true);
-    try {
-      const provider = await getProvider();
-      await switchToMinato(provider);
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
-      await handleConnected(accounts[0]);
-    } catch (e) {
-      alert(e.message);
+  const doDisconnect = useCallback(() => {
+    setAddress(null); setOwnedName(null); setWalletName(''); providerRef.current = null;
+  }, []);
+
+  /* detection */
+  useEffect(() => {
+    let alive = true;
+    function refresh() {
+      if (!alive) return;
+      const found = window.__scanWallets();
+      setWallets(found);
+      found.forEach(w => {
+        w.provider.request({ method: 'eth_accounts' }).then(accs => {
+          if (accs && accs[0] && !providerRef.current && alive) {
+            providerRef.current = w.provider; setWalletName(w.name);
+            setAddress(accs[0]); loadOwnedName(accs[0]);
+          }
+        }).catch(() => {});
+        w.provider.on && w.provider.on('accountsChanged', accs => {
+          if (providerRef.current !== w.provider) return;
+          if (accs && accs[0]) { setAddress(accs[0]); loadOwnedName(accs[0]); } else doDisconnect();
+        });
+      });
     }
-    setConn(false);
+    refresh();
+    const t = setTimeout(refresh, 500);
+    window.addEventListener('eip6963:announceProvider', refresh);
+    window.dispatchEvent(new Event('eip6963:requestProvider'));
+    return () => { alive = false; clearTimeout(t); window.removeEventListener('eip6963:announceProvider', refresh); };
+  }, [loadOwnedName, doDisconnect]);
+
+  /* URL-based routing: starname.vercel.app/emre → profile page */
+  useEffect(() => {
+    const path = window.location.pathname.replace('/', '').replace('.star', '').toLowerCase();
+    if (path && path.length >= 3) setPage(`profile:${path}`);
+  }, []);
+
+  const handleSelect = async (walletInfo, type) => {
+    setModalError(null); setConnecting(true);
+    try {
+      if (type === 'walletconnect') {
+        const { default: EthereumProvider } = await import('https://esm.sh/@walletconnect/ethereum-provider@2');
+        let wcp = wcRef.current;
+        if (!wcp) {
+          wcp = await EthereumProvider.init({ projectId: WC_PROJECT_ID, chains: [1946], optionalChains: [1946], rpcMap: { 1946: 'https://rpc.minato.soneium.org' }, showQrModal: true, metadata: { name: 'Starname', description: 'Onchain identity', url: location.origin, icons: [] } });
+          wcRef.current = wcp;
+          wcp.on('accountsChanged', accs => { if (!accs || !accs[0]) { doDisconnect(); return; } providerRef.current = wcp; setAddress(accs[0]); loadOwnedName(accs[0]); });
+          wcp.on('disconnect', doDisconnect);
+        }
+        await wcp.connect();
+        const accs = await wcp.request({ method: 'eth_accounts' });
+        providerRef.current = wcp; setWalletName('WalletConnect'); setAddress(accs[0]); await loadOwnedName(accs[0]);
+      } else {
+        const p = walletInfo.provider;
+        await switchToMinato(p);
+        const accs = await p.request({ method: 'eth_requestAccounts' });
+        providerRef.current = p; setWalletName(walletInfo.name); setAddress(accs[0]); await loadOwnedName(accs[0]);
+      }
+      setShowModal(false);
+    } catch (e) { const raw = e?.message || String(e); setModalError(raw.length > 100 ? raw.slice(0, 100) + '…' : raw); }
+    setConnecting(false);
   };
 
-  const disconnect = () => { setAddress(null); setOwnedName(null); };
-
-  /* ── sanitise input ── */
-  const handleNameInput = (val) => {
-    const clean = val.toLowerCase().replace(/[^a-z0-9-]/g, '');
-    setNameInput(clean);
-    setAvailable(null);
-    setMintError(null);
+  const disconnect = async () => {
+    if (wcRef.current && providerRef.current === wcRef.current) { try { await wcRef.current.disconnect(); } catch {} wcRef.current = null; }
+    doDisconnect();
   };
 
-  /* ── check availability ── */
+  const openModal = () => { setModalError(null); setShowModal(true); };
+
+  const handleNameInput = val => { setNameInput(val.toLowerCase().replace(/[^a-z0-9-]/g, '')); setAvailable(null); setMintError(null); };
+
   const checkAvailability = async () => {
     if (nameInput.length < 3) return;
-    setChecking(true);
-    setAvailable(null);
-    setMintError(null);
-    try {
-      const ok = await publicClient.readContract({
-        address: REGISTRY_ADDRESS,
-        abi: REGISTRY_ABI,
-        functionName: 'isAvailable',
-        args: [nameInput],
-      });
-      setAvailable(ok);
-    } catch (e) {
-      setMintError('Could not check — RPC error.');
-    }
+    setChecking(true); setAvailable(null); setMintError(null);
+    try { const ok = await publicClient.readContract({ address: REGISTRY_ADDRESS, abi: REGISTRY_ABI, functionName: 'isAvailable', args: [nameInput] }); setAvailable(ok); }
+    catch { setMintError('Could not check — RPC error.'); }
     setChecking(false);
   };
 
-  /* ── mint ── */
   const mintName = async () => {
-    if (!address) return;
-    setMinting(true);
-    setMintError(null);
+    if (!address || !providerRef.current) return;
+    setMinting(true); setMintError(null);
     try {
-      const provider = await getProvider();
-      await switchToMinato(provider);
-      const walletClient = createWalletClient({
-        chain: SONEIUM_MINATO,
-        transport: custom(provider),
-      });
-      const hash = await walletClient.writeContract({
-        address: REGISTRY_ADDRESS,
-        abi: REGISTRY_ABI,
-        functionName: 'mint',
-        args: [nameInput],
-        account: address,
-      });
+      if (providerRef.current !== wcRef.current) await switchToMinato(providerRef.current);
+      const wc = createWalletClient({ chain: SONEIUM_MINATO, transport: custom(providerRef.current) });
+      const hash = await wc.writeContract({ address: REGISTRY_ADDRESS, abi: REGISTRY_ABI, functionName: 'mint', args: [nameInput], account: address });
       setMintTx(hash);
       await publicClient.waitForTransactionReceipt({ hash });
-      setMintedName(nameInput);
-      setOwnedName(nameInput);
-      setAvailable(null);
-    } catch (e) {
-      const msg = e?.shortMessage || e?.message || 'Transaction failed';
-      setMintError(msg.length > 120 ? msg.slice(0, 120) + '…' : msg);
-    }
+      setMintedName(nameInput); setOwnedName(nameInput); setAvailable(null);
+    } catch (e) { const msg = e?.shortMessage || e?.message || 'Transaction failed'; setMintError(msg.length > 120 ? msg.slice(0, 120) + '…' : msg); }
     setMinting(false);
   };
 
-  /* ── resolve ── */
   const resolveName = async () => {
     const name = resolveInput.trim().toLowerCase().replace(/\.star$/, '');
     if (!name) return;
-    setResolving(true);
-    setResolved(null);
-    setResolveError(null);
+    setResolving(true); setResolved(null); setResolveError(null);
     try {
-      const addr = await publicClient.readContract({
-        address: REGISTRY_ADDRESS,
-        abi: REGISTRY_ABI,
-        functionName: 'resolve',
-        args: [name],
-      });
-      if (!addr || addr === NULL_ADDR) {
-        setResolveError(`${name}.star is not registered.`);
-      } else {
-        setResolved({ name, address: addr });
-      }
-    } catch {
-      setResolveError('Resolve failed — RPC error.');
-    }
+      const addr = await publicClient.readContract({ address: REGISTRY_ADDRESS, abi: REGISTRY_ABI, functionName: 'resolve', args: [name] });
+      if (!addr || addr === NULL_ADDR) setResolveError(`${name}.star is not registered.`);
+      else setResolved({ name, address: addr });
+    } catch { setResolveError('Resolve failed — RPC error.'); }
     setResolving(false);
   };
 
-  const short = (addr) => addr ? `${addr.slice(0,6)}…${addr.slice(-4)}` : '';
+  /* ── Profile page ── */
+  if (page.startsWith('profile:')) {
+    const profileName = page.split(':')[1];
+    return h('div', null,
+      showModal && h(WalletModal, { wallets, onSelect: handleSelect, onClose: () => setShowModal(false), modalError, connecting }),
+      h('p', { className: 'wordmark', onClick: () => setPage('home') }, 'Star', h('em', null, 'name')),
+      h('p', { className: 'tagline' }, 'Onchain identity · Soneium'),
+      h('div', { className: 'wallet-bar' },
+        h('div', { className: 'wallet-status' },
+          h('div', { className: `wallet-dot ${address ? 'on' : 'off'}` }),
+          h('span', { className: 'wallet-addr' }, address ? `${walletName ? walletName + ' · ' : ''}${short(address)}` : 'No wallet connected'),
+        ),
+        address ? h('button', { className: 'wallet-btn', onClick: disconnect }, 'Disconnect')
+                : h('button', { className: 'wallet-btn connect', onClick: openModal }, 'Connect wallet')
+      ),
+      h(ProfilePage, { name: profileName, address, providerRef, wcRef, onBack: () => setPage('home') }),
+    );
+  }
 
-  /* ── render ── */
+  /* ── Home page ── */
   return h('div', null,
-
-    /* wordmark */
+    showModal && h(WalletModal, { wallets, onSelect: handleSelect, onClose: () => setShowModal(false), modalError, connecting }),
     h('p', { className: 'wordmark' }, 'Star', h('em', null, 'name')),
     h('p', { className: 'tagline' }, 'Onchain identity · Soneium'),
 
-    /* wallet bar */
+    window.__isFileProtocol && !address && h('div', { className: 'file-warning' },
+      h('strong', null, '⚠ Opened as a local file (file://)'),
+      'Serve with: ', h('code', null, 'npx serve .'), ' → open ', h('code', null, 'http://localhost:3000'),
+    ),
+
     h('div', { className: 'wallet-bar' },
       h('div', { className: 'wallet-status' },
         h('div', { className: `wallet-dot ${address ? 'on' : 'off'}` }),
-        h('span', { className: 'wallet-addr' },
-          address ? short(address) : 'No wallet connected'
-        ),
+        h('span', { className: 'wallet-addr' }, address ? `${walletName ? walletName + ' · ' : ''}${short(address)}` : 'No wallet connected'),
       ),
-      address
-        ? h('button', { className: 'wallet-btn', onClick: disconnect }, 'Disconnect')
-        : h('button', { className: 'wallet-btn connect', onClick: connectWallet, disabled: connecting },
-            connecting ? 'Connecting…' : 'Connect wallet'
-          )
+      address ? h('button', { className: 'wallet-btn', onClick: disconnect }, 'Disconnect')
+              : h('button', { className: 'wallet-btn connect', onClick: openModal }, 'Connect wallet')
     ),
 
-    /* ── SECTION: mint ── */
     h('p', { className: 'label' }, 'Claim a name'),
-
     h('div', { className: 'input-row' },
-      h('input', {
-        value: nameInput,
-        onChange: e => handleNameInput(e.target.value),
-        onKeyDown: e => e.key === 'Enter' && checkAvailability(),
-        placeholder: 'yourname',
-        maxLength: 32,
-        spellCheck: false,
-      }),
+      h('input', { value: nameInput, onChange: e => handleNameInput(e.target.value), onKeyDown: e => e.key === 'Enter' && checkAvailability(), placeholder: 'yourname', maxLength: 32, spellCheck: false }),
       h('span', { className: 'suffix' }, '.star'),
-      h('button', {
-        onClick: checkAvailability,
-        disabled: nameInput.length < 3 || checking,
-      }, checking ? '…' : 'Check'),
+      h('button', { onClick: checkAvailability, disabled: nameInput.length < 3 || checking }, checking ? '…' : 'Check'),
     ),
 
-    /* availability pill */
-    available === true && !mintedName &&
-      h('div', { className: 'pill ok slide' },
-        h('span', { className: 'dot' }),
-        `${nameInput}.star is available`
-      ),
-    available === false &&
-      h('div', { className: 'pill err slide' },
-        h('span', { className: 'dot' }),
-        `${nameInput}.star is taken`
-      ),
+    available === true && !mintedName && h('div', { className: 'pill ok slide' }, h('span', { className: 'dot' }), `${nameInput}.star is available`),
+    available === false && h('div', { className: 'pill err slide' }, h('span', { className: 'dot' }), `${nameInput}.star is taken`),
 
-    /* mint button */
     available === true && !mintedName && (
       !address
-        ? h('button', { className: 'btn ghost', onClick: connectWallet }, 'Connect wallet to mint')
-        : h('button', {
-            className: 'btn',
-            onClick: mintName,
-            disabled: minting,
-          },
-          minting
-            ? h('span', null, h('span', { className: 'spinner' }), 'Minting…')
-            : `Mint ${nameInput}.star`
+        ? h('button', { className: 'btn ghost', onClick: openModal }, 'Connect wallet to mint')
+        : h('button', { className: 'btn', onClick: mintName, disabled: minting },
+            minting ? h('span', null, h('span', { className: 'spinner' }), 'Minting…') : `Mint ${nameInput}.star`
           )
     ),
 
-    /* mint error */
-    mintError && h('div', { className: 'pill err slide', style: { marginTop: 10 } },
-      h('span', { className: 'dot' }), mintError
-    ),
+    mintError && h('div', { className: 'pill err slide', style: { marginTop: 10 } }, h('span', { className: 'dot' }), mintError),
 
-    /* success */
     mintedName && h('div', { className: 'success-banner slide' },
       h('div', { className: 'success-name' }, `${mintedName}.star`),
       h('div', { className: 'success-sub' }, `Owned by ${short(address)}`),
       mintTx && h('div', { style: { marginTop: 10 } },
-        h('a', {
-          className: 'tx-link',
-          href: `${EXPLORER}/tx/${mintTx}`,
-          target: '_blank',
-          rel: 'noreferrer',
-        }, `View tx ↗`)
-      )
+        h('a', { className: 'tx-link', href: `${EXPLORER}/tx/${mintTx}`, target: '_blank', rel: 'noreferrer' }, 'View tx ↗')
+      ),
+      h('button', { className: 'btn green', style: { marginTop: 12 }, onClick: () => setPage(`profile:${mintedName}`) }, 'Set up your profile →'),
     ),
 
     h('hr'),
 
-    /* ── SECTION: your name ── */
     ownedName && h('div', { className: 'slide' },
       h('p', { className: 'label' }, 'Your name'),
+      h('div', { className: 'data-row' }, h('span', { className: 'data-key' }, 'Name'), h('span', { className: 'data-value name' }, `${ownedName}.star`)),
+      h('div', { className: 'data-row' }, h('span', { className: 'data-key' }, 'Owner'), h('span', { className: 'data-value mono' }, address)),
       h('div', { className: 'data-row' },
-        h('span', { className: 'data-key' }, 'Name'),
-        h('span', { className: 'data-value name' }, `${ownedName}.star`),
-      ),
-      h('div', { className: 'data-row' },
-        h('span', { className: 'data-key' }, 'Owner'),
-        h('span', { className: 'data-value mono' }, address),
-      ),
-      h('div', { className: 'data-row' },
-        h('span', { className: 'data-key' }, 'Explorer'),
-        h('a', {
-          className: 'tx-link',
-          href: `${EXPLORER}/address/${address}`,
-          target: '_blank',
-          rel: 'noreferrer',
-        }, 'View on Blockscout ↗'),
+        h('span', { className: 'data-key' }, 'Profile'),
+        h('span', { className: 'data-value' },
+          h('span', { style: { cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }, onClick: () => setPage(`profile:${ownedName}`) }, `View / Edit →`)
+        ),
       ),
       h('hr'),
     ),
 
-    /* ── SECTION: resolve ── */
     h('p', { className: 'label' }, 'Resolve a name'),
-
     h('div', { className: 'resolve-input-row' },
-      h('input', {
-        value: resolveInput,
-        onChange: e => { setResolveInput(e.target.value); setResolved(null); setResolveError(null); },
-        onKeyDown: e => e.key === 'Enter' && resolveName(),
-        placeholder: 'emre.star or emre',
-        spellCheck: false,
-      }),
-      h('button', { onClick: resolveName, disabled: !resolveInput.trim() || resolving },
-        resolving ? '…' : 'Resolve'
-      ),
+      h('input', { value: resolveInput, onChange: e => { setResolveInput(e.target.value); setResolved(null); setResolveError(null); }, onKeyDown: e => e.key === 'Enter' && resolveName(), placeholder: 'emre.star or emre', spellCheck: false }),
+      h('button', { onClick: resolveName, disabled: !resolveInput.trim() || resolving }, resolving ? '…' : 'Resolve'),
     ),
 
-    resolveError && h('div', { className: 'pill err slide', style: { marginTop: 10 } },
-      h('span', { className: 'dot' }), resolveError
-    ),
+    resolveError && h('div', { className: 'pill err slide', style: { marginTop: 10 } }, h('span', { className: 'dot' }), resolveError),
 
     resolved && h('div', { className: 'slide', style: { marginTop: 10 } },
+      h('div', { className: 'data-row' }, h('span', { className: 'data-key' }, 'Name'), h('span', { className: 'data-value name' }, `${resolved.name}.star`)),
+      h('div', { className: 'data-row' }, h('span', { className: 'data-key' }, 'Address'), h('span', { className: 'data-value mono' }, resolved.address)),
       h('div', { className: 'data-row' },
-        h('span', { className: 'data-key' }, 'Name'),
-        h('span', { className: 'data-value name' }, `${resolved.name}.star`),
-      ),
-      h('div', { className: 'data-row' },
-        h('span', { className: 'data-key' }, 'Address'),
-        h('span', { className: 'data-value mono' }, resolved.address),
-      ),
-      h('div', { className: 'data-row' },
-        h('span', { className: 'data-key' }, 'Explorer'),
-        h('a', {
-          className: 'tx-link',
-          href: `${EXPLORER}/address/${resolved.address}`,
-          target: '_blank',
-          rel: 'noreferrer',
-        }, 'View on Blockscout ↗'),
+        h('span', { className: 'data-key' }, 'Profile'),
+        h('span', { className: 'data-value' },
+          h('span', { style: { cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }, onClick: () => setPage(`profile:${resolved.name}`) }, 'View profile →')
+        ),
       ),
     ),
 
-    /* footer */
     h('div', { style: { marginTop: 60, color: 'var(--ink3)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase' } },
-      `Contract · `,
-      h('a', {
-        href: `${EXPLORER}/address/${REGISTRY_ADDRESS}`,
-        target: '_blank',
-        rel: 'noreferrer',
-        style: { color: 'var(--ink3)', textDecoration: 'underline', textUnderlineOffset: '3px' },
-      }, `${REGISTRY_ADDRESS.slice(0,10)}…`),
+      'Registry · ',
+      h('a', { href: `${EXPLORER}/address/${REGISTRY_ADDRESS}`, target: '_blank', rel: 'noreferrer', style: { color: 'var(--ink3)', textDecoration: 'underline', textUnderlineOffset: '3px' } }, `${REGISTRY_ADDRESS.slice(0,10)}…`),
     ),
   );
 }
