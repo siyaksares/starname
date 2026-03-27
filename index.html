@@ -244,14 +244,18 @@ function WalletModal({ wallets, onSelect, onClose, modalError, connecting }) {
 
 /* ── ProfilePage ── */
 function ProfilePage({ name, address, providerRef, wcRef, onBack }) {
-  const [profile,  setProfile]  = useState(null);
+  const [profile,       setProfile]       = useState(null);
+  const [registryOwner, setRegistryOwner] = useState(null);
   const [loading,  setLoading]  = useState(true);
   const [editing,  setEditing]  = useState(false);
   const [saving,   setSaving]   = useState(false);
   const [saveErr,  setSaveErr]  = useState(null);
   const [form, setForm] = useState({ bio: '', avatarURI: '', twitter: '', telegram: '', website: '' });
 
-  const isOwner = address && profile?.owner && address.toLowerCase() === profile.owner.toLowerCase();
+  /* isOwner reads from StarRegistry — works even before first profile save */
+  const isOwner = address && registryOwner &&
+    address.toLowerCase() === registryOwner.toLowerCase() &&
+    registryOwner !== NULL_ADDR;
 
   useEffect(() => {
     loadProfile();
@@ -260,6 +264,13 @@ function ProfilePage({ name, address, providerRef, wcRef, onBack }) {
   const loadProfile = async () => {
     setLoading(true);
     try {
+      /* Read owner from registry — this is the source of truth */
+      const owner = await publicClient.readContract({
+        address: REGISTRY_ADDRESS, abi: REGISTRY_ABI,
+        functionName: 'resolve', args: [name],
+      });
+      setRegistryOwner(owner);
+
       const p = await publicClient.readContract({
         address: PROFILE_ADDRESS, abi: PROFILE_ABI,
         functionName: 'getProfile', args: [name],
@@ -313,7 +324,7 @@ function ProfilePage({ name, address, providerRef, wcRef, onBack }) {
         ? h('img', { className: 'profile-avatar', src: profile.avatarURI, alt: name })
         : h('div', { className: 'profile-avatar-placeholder' }, name[0].toUpperCase()),
       h('div', { className: 'profile-name' }, `${name}.star`),
-      h('div', { className: 'profile-owner' }, profile?.owner && profile.owner !== NULL_ADDR ? short(profile.owner) : 'No profile set'),
+      h('div', { className: 'profile-owner' }, registryOwner && registryOwner !== NULL_ADDR ? short(registryOwner) : 'Not registered'),
     ),
 
     profile?.bio && h('p', { className: 'profile-bio' }, profile.bio),
